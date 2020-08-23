@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <!-- 404오류 -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+
+
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+
+
+    form {
+        margin: auto;
+        border: 0.1vw solid #E9ECEF;
+        width: 30vw;
+        height: auto;
+        display: none;
+    }
+
+    form div {
+        margin: 1vh 0.3vw;
+    }
+
+    #time_grid {
+        display: grid;
+        grid-template-columns: 15vw 1fr;
+    }
+
+    #image {
+        font-size: small;
+        color: #6C757D;
+    }
+
+    #image_container img {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .dietmemo button {
+        float: center;
+        border: none;
+        background-color: #E9ECEF;
+        font-size: small;
+        width: 28vw;
+    }
+
+    .save {
+        text-align: center;
+    }
+
+    .btn {
+        background-color: #007BFF;
+        color: honeydew;
+        border: none;
+        border-radius: 0.5em;
+        margin-top: 3vh;
+        font-size: x-large;
+    }
+
+    #active span {
+        padding: 1vw;
+    }
+
+    #card_array {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        grid-gap: 1vw;
+        margin: 3vh 1vw;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#card-array').html('');
+        listing();
+    });
+
+    function listing() {
+
+        $.ajax({
+            type: "GET",
+            url: "/list",
+            data: {},
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    let pages = response['pages']
+                    for (let i = 0; i < pages.length; i++) {
+         
+                        let page = pages[i]
+                        let weight = page['weight']
+                        let date = page['date']
+                        let sleeptime = page['sleeptime']
+                        let awaketime = page['awaketime']
+                        let breakfast_time = page['breakfast_time']
+                        let breafast = page['breakfast']
+
+                        let temp_html = `<div class="card" style="width: 18rem;">
+                                        <div class="maincover" type="text" style="width:18rem; height: 19vh; background-color:red; font-size:8em; color:honeydew; text-align: center;">
+                                        ${weight}</div>
+                                                            <div class="card-body">
+                                            <h5 class="card-title">${date}</h5>
+                                            <p class="card-text">취침:${sleeptime}, 기상:${awaketime}</p>
+                                        </div>
+                                            <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">식사기록: ${breakfast_time},${breakfast}</li>
+                                            <li class="list-group-item">포만감</li>
+                                            <li class="list-group-item">활동량</li>
+                                            </ul>
+                                        <div class="card-body">
+                                            <a href="#" class="card-link">수정하기</a>
+                                            <a href="#" class="card-link">공유하기</a>
+                                        </div>
+                                        </div>`;
+
+                        $('#card_array').append(temp_html);
+                        console.log('메이크카드함수?')
+
+
+                    }} else {
+                    alert('서버오류');
+                }
+            }
+        })
+    }
+
+    function openclose() {
+        if ($('#posting_form').css('display') == 'block') {
+            $('#posting_form').hide();
+            $('#btn_posting_form').text('기록하자!')
+        } else {
+            $('#posting_form').show();
+            $('#btn_posting_form').text('기록보기:)')
+        }
+    }
+
+    function setThumbnail(event) {
+        for (let image of event.target.files) {
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                let img = document.createElement("img");
+                img.setAttribute("src", event.target.result);
+                if (img && img.style) {
+                    img.style.height = '100px';
+                    img.style.width = '100px';
+                }
+                document.querySelector("div#image_container").appendChild(img);
+
+            };
+            reader.readAsDataURL(image);
+        }
+    }
+
+    function setThumbnail2(event) {
+        for (let image of event.target.files) {
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                let img = document.createElement("img");
+                img.setAttribute("src", event.target.result);
+                if (img && img.style) {
+                    img.style.height = '100px';
+                    img.style.width = '100px';
+                }
+                document.querySelector("div#image_container2").appendChild(img);
+
+            };
+            reader.readAsDataURL(image);
+        }
+    }
+
+    function setThumbnail3(event) {
+        for (let image of event.target.files) {
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                let img = document.createElement("img");
+                img.setAttribute("src", event.target.result);
+                if (img && img.style) {
+                    img.style.height = '100px';
+                    img.style.width = '100px';
+                }
+                document.querySelector("div#image_container3").appendChild(img);
+
+            };
+            reader.readAsDataURL(image);
+        }
+    }
+
+    function setThumbnail4(event) {
+        for (let image of event.target.files) {
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                let img = document.createElement("img");
+                img.setAttribute("src", event.target.result);
+                if (img && img.style) {
+                    img.style.height = '100px';
+                    img.style.width = '100px';
+                }
+                document.querySelector("div#image_container4").appendChild(img);
+
+            };
+            reader.readAsDataURL(image);
+        }
+    }
+
+    function setThumbnail5(event) {
+        for (let image of event.target.files) {
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                let img = document.createElement("img");
+                img.setAttribute("src", event.target.result);
+                if (img && img.style) {
+                    img.style.height = '100px';
+                    img.style.width = '100px';
+                }
+                document.querySelector("div#image_container5").appendChild(img);
+
+            };
+            reader.readAsDataURL(image);
+        }
+    }
+
+    function setThumbnail6(event) {
+        for (let image of event.target.files) {
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                let img = document.createElement("img");
+                img.setAttribute("src", event.target.result);
+                if (img && img.style) {
+                    img.style.height = '100px';
+                    img.style.width = '100px';
+                }
+                document.querySelector("div#image_container6").appendChild(img);
+
+            };
+            reader.readAsDataURL(image);
+        }
+    }
+
+
+    function choiceone(a) {
+        let obj = document.getElementsByName("movement");
+        for (let i = 0; i < obj.length; i++) {
+            if (obj[i] != a) {
+                obj[i].checked = false;
+            }
+        }
+    }
+
+
+
+    function savedata() {
+
+        let date = $('#date').val();
+        let weight = $('#weight').val();
+        let sleeptime = $('#sleeptime').val();
+        let awaketime = $('#awaketime').val();
+        let breakfast_time = $('#breakfast_time').val();
+        let breakfast = $('#breakfast').val();
+        let meal = $('meal').val();
+        let lunch = $('#lunch').val();
+        let dinner_time = $('#dinner_time').val();
+        let dinner = $('#dinner').val();
+        let snack1_time = $('#snack1_time').val();
+        let snack1 = $('#snack1').val();
+        let snack2_time = $('#snack2_time').val();
+        let snack2 = $('#snack2').val();
+        let snack3_time = $('#snack3_time').val();
+        let snack3 = $('#snack3').val();
+
+        let choice = document.getElementsByName("movement")
+        let choice_length = choice.length;
+
+        for (i = 0; i < choice_length; i++) {
+            if (choice[i].checked == true) {
+                var movement = choice[i].value;
+            }
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/savedata",
+            data: {
+                date_give: date, weight_give: weight, sleeptime_give: sleeptime, awaketime_give: awaketime, breakfast_time_give: breakfast_time,
+                breakfast_give: breakfast, lunch_give: lunch, meal_give: meal, dinner_give: dinner, dinner_time_give: dinner_time, snack1_give: snack1, snack1_time_give: snack1_time,
+                snack2_give: snack2, snack2_time_give: snack2_time, snack3_give: snack3, snack3_time_give: snack3_time, movement_give: movement
+            }, // 데이터를 주는 방법
+            success: function (response) { // 성공하면
+                if (response['result'] == 'success') {
+
+                    window.location.reload();
+                } else {
+                    alert('서버 오류!')
+                }
+            }
+        })
+    }
+
+
+</script>
+
+
+<body>
+
+    <div class="jumbotron">
+        <h1 class="display-4">Hello, world!</h1>
+        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to
+            featured content or information.</p>
+        <hr class="my-4">
+        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+        <p class="lead">
+            <button class="btn" id="btn_posting_form" onclick="openclose()">기록하자!</button>
+        </p>
+    </div>
+
+    <form id="posting_form">
+        <div class="form-group">
+            <div style="margin-top:3vh">날짜
+                <input type="date" class="form-control" id="date" aria-describedby="dateHelp"></div>
+            <div>공복체중(kg)
+                <input type="weight" class="form-control" id="weight" aria-describedby="WeightHelp" placeholder="kg">
+            </div>
+            <div id="time_grid">
+
+                <div style="margin:0vh 0.3vw;">취침시간
+                    <input id="sleeptime" type="time" class="form-control" aria-describedby="sleepHelp"></input>
+                    <small id="msg_sleeptime" class="form-text text-muted">전날 잠든 시간을 알려주세요.</small></div>
+
+                <div style="margin:0vh 0.3vw;">기상 시간
+                    <input id="awaketime" type="time" class="form-control" aria-describedby="awakeHelp"></input>
+                    <small id="msg_awaketime" class="form-text text-muted">일어난 시간을 알려주세요.</small></div>
+
+            </div>
+
+            <div class="dietmemo">식사기록
+
+                <div>
+                    <button type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false">
+                        아침식사
+                    </button>
+
+                    <div class="collapse" id="collapseExample">
+                        <div class="card card-body">
+                            <input type="time" class="form-control" id="breakfast_time">
+                            <textarea id="breakfast" class="form-control" placeholder="먹은 음식을 기록해요."></textarea>
+                            <small class="form-text text-muted" style="margin-bottom: 0.5vh;">ex)김치찌개, 밥
+                                1공기, 계란후라이 1개</small>
+
+                            <input type="file" id="image" accept="image/*" style="margin-bottom: 0.5vh;"
+                                onchange="setThumbnail(event)" multiple />
+                            <div id="image_container"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="button" data-toggle="collapse" data-target="#collapseExample1_1"
+                        aria-expanded="false">
+                        간식
+                    </button>
+
+                    <div class="collapse" id="collapseExample1_1">
+                        <div class="card card-body">
+                            <input type="time" class="form-control" id="snack1_time" aria-describedby="dietHelp">
+                            <textarea id="snack1" class="form-control" placeholder="먹은 음식을 기록해요."></textarea>
+                            <small class="form-text text-muted">ex)닭가슴살 샐러드, 카페라떼 1잔</small>
+
+                            <input type="file" id="image" accept="image/*" onchange="setThumbnail2(event);" multiple />
+                            <div id="image_container2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="button" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false">
+                        점심식사
+                    </button>
+
+                    <div class="collapse" id="collapseExample2">
+                        <div class="card card-body">
+                            <input type="time" class="form-control" id="meal_time" aria-describedby="dietHelp">
+                            <textarea id="meal" class="form-control" placeholder="먹은 음식을 기록해요."></textarea>
+                            <small class="form-text text-muted">ex)닭가슴살 샐러드, 카페라떼 1잔</small>
+
+                            <input type="file" id="image" accept="image/*" onchange="setThumbnail3(event);" multiple />
+                            <div id="image_container3"></div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div>
+                    <button type="button" data-toggle="collapse" data-target="#collapseExample2_1"
+                        aria-expanded="false">
+                        간식
+                    </button>
+
+                    <div class="collapse" id="collapseExample2_1">
+                        <div class="card card-body">
+                            <input type="time" class="form-control" id="snack2_time" aria-describedby="dietHelp">
+                            <textarea id="snack2" class="form-control" placeholder="먹은 음식을 기록해요."></textarea>
+                            <small id="dietHelp" class="form-text text-muted">ex)닭가슴살 샐러드, 카페라떼 1잔</small>
+
+                            <input type="file" id="image" accept="image/*" onchange="setThumbnail4(event);" multiple />
+                            <div id="image_container4"></div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="button" data-toggle="collapse" data-target="#collapseExample3" aria-expanded="false">
+                        저녁식사
+                    </button>
+
+                    <div class="collapse" id="collapseExample3">
+                        <div class="card card-body">
+                            <input type="time" class="form-control" id="dinner_time" aria-describedby="dietHelp">
+                            <textarea id="dinner" class="form-control" placeholder="먹은 음식을 기록해요."></textarea>
+                            <small id="dietHelp" class="form-text text-muted">ex)김치찌개, 밥 1공기, 계란후라이 1개</small>
+
+                            <input type="file" id="image" accept="image/*" onchange="setThumbnail5(event);" multiple />
+                            <div id="image_container5"></div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="button" data-toggle="collapse" data-target="#collapseExample3_1"
+                        aria-expanded="false">
+                        간식
+                    </button>
+
+                    <div class="collapse" id="collapseExample3_1">
+                        <div class="card card-body">
+                            <input type="time" class="form-control" id="snack3_time" aria-describedby="dietHelp">
+                            <textarea id="snack3" class="form-control" placeholder="먹은 음식을 기록해요."></textarea>
+                            <small id="dietHelp" class="form-text text-muted">ex)닭가슴살 샐러드, 카페라떼 1잔</small>
+
+                            <input type="file" id="image" accept="image/*" onchange="setThumbnail6(event);" multiple />
+                            <div id="image_container6"></div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>활동량 평가
+
+                <div id="active">
+                    <span><input type="checkbox" name="movement" value="sedentary" onclick="choiceone(this)"
+                            style="margin-right: 0.5vw;">Sedentary</span>
+                    <span><input type="checkbox" name="movement" value="low" onclick="choiceone(this)"
+                            style="margin-right: 0.5vw;">Low</span>
+                    <span><input type="checkbox" name="movement" value="active" onclick="choiceone(this)"
+                            style="margin-right: 0.5vw;">Active</span>
+                    <span><input type="checkbox" name="movement" value="high" onclick="choiceone(this)"
+                            style="margin-right: 0.5vw;">High</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="save">
+                <button class="btn" id="btn_save" type="button" style="margin-top: 3vh; width:10vw; font-size: medium;"
+                    onclick="savedata()">저장하기</button>
+            </div>
+
+
+
+
+        </div>
+
+
+
+
+    </form>
+
+    <div id="card_array" style="margin:3vh;">
+
+        <div class="card" style="width: 18rem;">
+            <div class="maincover" type="text"
+                style="width:18rem; height: 19vh; background-color:red; font-size:large; color:honeydew; text-align: center;">
+                ${weight}</div>
+            <div class="card-body">
+                <h5 class="card-title">${date}</h5>
+                <p class="card-text">취침:${sleeptime}, 기상:${awaketime}</p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">식사기록: ${breakfast_time},${breakfast}</li>
+                <li class="list-group-item">포만감</li>
+                <li class="list-group-item">활동량</li>
+            </ul>
+            <div class="card-body">
+                <a href="#" class="card-link">수정하기</a>
+                <a href="#" class="card-link">공유하기</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
