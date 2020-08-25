@@ -20,6 +20,8 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
+
+
     <!-- 404오류 -->
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
@@ -109,29 +111,49 @@
                 if (response['result'] == 'success') {
                     let pages = response['pages']
                     for (let i = 0; i < pages.length; i++) {
-         
+
                         let page = pages[i]
                         let weight = page['weight']
                         let date = page['date']
                         let sleeptime = page['sleeptime']
                         let awaketime = page['awaketime']
                         let breakfast_time = page['breakfast_time']
-                        let breafast = page['breakfast']
+                        let breakfast = page['breakfast']
+                        let snack1_time = page['snack1_time']
+                        let snack1 = page['snack1']
+                        let snack2_time = page['snack2_time']
+                        let snack2 = page['snack2']
+                        let snack3_time = page['snack3_time']
+                        let snack3 = page['snack3']
+                        let dinner_time = page['dinner_time']
+                        let dinner = page['dinner']
+                        let movement = page['movement']
+                        let fullness = page['fullness']
 
                         let temp_html = `<div class="card" style="width: 18rem;">
-                                        <div class="maincover" type="text" style="width:18rem; height: 19vh; background-color:red; font-size:8em; color:honeydew; text-align: center;">
+                                        <div class="maincover" type="text" style="width:18rem; height: 13rem; background-color:red; font-size:8em; color:honeydew; text-align: center;">
                                         ${weight}</div>
                                                             <div class="card-body">
-                                            <h5 class="card-title">${date}</h5>
-                                            <p class="card-text">취침:${sleeptime}, 기상:${awaketime}</p>
+                                            <h5 class="card-title" id="date">${date}</h5>
+                                            <p class="card-text">취침:${sleeptime}  // 기상:${awaketime}</p>
                                         </div>
                                             <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">식사기록: ${breakfast_time},${breakfast}</li>
-                                            <li class="list-group-item">포만감</li>
-                                            <li class="list-group-item">활동량</li>
+                                            <li class="list-group-item">식사기록
+                                                <p>${breakfast_time}  ${breakfast}</p>
+                                                <p>${snack1_time}  ${snack1}</p>
+                                                <p>${snack2_time}  ${snack2}</p>
+                                                <p>${dinner_time}  ${dinner}</p>
+                                                <p>${snack3_time}  ${snack3}</p>
+                                                </li>
+                                            <li class="list-group-item">포만감 : 
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" 
+                                                style="width: ${fullness}%;" aria-valuemin="0" aria-valuemax="100" value="${fullness}">${fullness}%</div></div></li>
+                                            <li class="list-group-item">활동량 : ${movement}</li>
                                             </ul>
                                         <div class="card-body">
-                                            <a href="#" class="card-link">수정하기</a>
+                                            <a href="#" class="card-link"
+                                            onclick="rewrite('${date}','${weight}','${sleeptime}','${awaketime}','${breakfast_time}','${breakfast}','${snack1_time}','${snack1}','${snack2_time}','${snack2}','${snack3_time}','${snack3}','${dinner_time}','${dinner}','${movement}','${fullness}')">수정하기</a>
                                             <a href="#" class="card-link">공유하기</a>
                                         </div>
                                         </div>`;
@@ -140,7 +162,8 @@
                         console.log('메이크카드함수?')
 
 
-                    }} else {
+                    }
+                } else {
                     alert('서버오류');
                 }
             }
@@ -155,6 +178,26 @@
             $('#posting_form').show();
             $('#btn_posting_form').text('기록보기:)')
         }
+    }
+
+    function rewrite(date,weight,sleeptime,awaketime,breakfast_time,breakfast,snack1_time,snack1,snack2,snack3,snack2_time,snack3_time,fullness) {
+        $('#posting_form').show()
+        $('#btn_posting_form').text('기록보기:)')
+        $('#date').val(date)
+        $('#weight').val(weight)
+        $('#sleeptime').val(sleeptime)
+        $('#awaketime').val(awaketime)
+        $('#breakfast_time').val(breakfast_time)
+        $('#breakfast').val(breakfast)
+        $('#snack1_time').val(snack1_time)
+        $('#snack1').val(snack1)
+        $('#snack2_time').val(snack2_time)
+        $('#snack2').val(snack2)
+        $('#snack3_time').val(snack3_time)
+        $('#snack3').val(snack3)
+        $('#dinner_time').val(dinner_time)
+        $('#dinner').val(dinner)
+        $('#fullness').val(fullness)
     }
 
     function setThumbnail(event) {
@@ -289,6 +332,7 @@
         let snack2 = $('#snack2').val();
         let snack3_time = $('#snack3_time').val();
         let snack3 = $('#snack3').val();
+        let fullness = $('#fullness').val();
 
         let choice = document.getElementsByName("movement")
         let choice_length = choice.length;
@@ -305,7 +349,7 @@
             data: {
                 date_give: date, weight_give: weight, sleeptime_give: sleeptime, awaketime_give: awaketime, breakfast_time_give: breakfast_time,
                 breakfast_give: breakfast, lunch_give: lunch, meal_give: meal, dinner_give: dinner, dinner_time_give: dinner_time, snack1_give: snack1, snack1_time_give: snack1_time,
-                snack2_give: snack2, snack2_time_give: snack2_time, snack3_give: snack3, snack3_time_give: snack3_time, movement_give: movement
+                snack2_give: snack2, snack2_time_give: snack2_time, snack3_give: snack3, snack3_time_give: snack3_time, movement_give: movement, fullness_give: fullness
             }, // 데이터를 주는 방법
             success: function (response) { // 성공하면
                 if (response['result'] == 'success') {
@@ -338,9 +382,12 @@
     <form id="posting_form">
         <div class="form-group">
             <div style="margin-top:3vh">날짜
-                <input type="date" class="form-control" id="date" aria-describedby="dateHelp"></div>
-            <div>공복체중(kg)
-                <input type="weight" class="form-control" id="weight" aria-describedby="WeightHelp" placeholder="kg">
+                <input type="date" class="form-control" id="date" value=''></div>
+                <script>
+                    document.getElementById('date').value = new Date().toISOString().substring(0, 10);
+                </script>
+            <div>공복체중(kg)   
+                <input type="weight" class="form-control" id="weight" placeholder="kg" value=''>
             </div>
             <div id="time_grid">
 
@@ -427,7 +474,6 @@
 
                             <input type="file" id="image" accept="image/*" onchange="setThumbnail4(event);" multiple />
                             <div id="image_container4"></div>
-
                         </div>
                     </div>
                 </div>
@@ -470,8 +516,14 @@
                 </div>
             </div>
 
-            <div>활동량 평가
+            <div>포만감 평가(%)
+                <input type="percentage" id="fullness" class="form-control" placeholder="%" value=''></input>
+                <small class="form-text text-muted">현재 먹은 음식, 또는 하루 전체적인 포만감을 작성해봐요.
+                    <br>너무 배부르지않게 내 포만감의 80%만 채워보는게 어때요?</small>
+            </div>
 
+
+            <div>활동량 평가
                 <div id="active">
                     <span><input type="checkbox" name="movement" value="sedentary" onclick="choiceone(this)"
                             style="margin-right: 0.5vw;">Sedentary</span>
@@ -482,9 +534,7 @@
                     <span><input type="checkbox" name="movement" value="high" onclick="choiceone(this)"
                             style="margin-right: 0.5vw;">High</span>
                 </div>
-
             </div>
-
 
 
             <div class="save">
@@ -503,25 +553,35 @@
     </form>
 
     <div id="card_array" style="margin:3vh;">
-
         <div class="card" style="width: 18rem;">
-            <div class="maincover" type="text"
-                style="width:18rem; height: 19vh; background-color:red; font-size:large; color:honeydew; text-align: center;">
-                ${weight}</div>
-            <div class="card-body">
-                <h5 class="card-title">${date}</h5>
-                <p class="card-text">취침:${sleeptime}, 기상:${awaketime}</p>
+            <div class="maincover" type="text" style="width:18rem; height: 13rem; background-color:red; font-size:8em; color:honeydew; text-align: center;">
+            ${weight}</div>
+                                <div class="card-body">
+                <h5 class="card-title" id="date">${date}</h5>
+                <p class="card-text">취침:${sleeptime}  // 기상:${awaketime}</p>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">식사기록: ${breakfast_time},${breakfast}</li>
-                <li class="list-group-item">포만감</li>
-                <li class="list-group-item">활동량</li>
-            </ul>
+                <ul class="list-group list-group-flush">
+                <li class="list-group-item">식사기록
+                    <p>${breakfast_time}  ${breakfast}</p>
+                    <p>${snack1_time}  ${snack1}</p>
+                    <p>${snack2_time}  ${snack2}</p>
+                    <p>${dinner_time}  ${dinner}</p>
+                    <p>${snack3_time}  ${snack3}</p>
+                    </li>
+                <li class="list-group-item">포만감 : 
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" 
+                    style="width: 90%;" aria-valuemin="0" aria-valuemax="100" >${fullness}%</div></div></li>
+                <li class="list-group-item">활동량 : ${movement}</li>
+                </ul>
             <div class="card-body">
-                <a href="#" class="card-link">수정하기</a>
+                <a href="#" class="card-link"
+                onclick="rewrite('${date}','${weight}','${sleeptime}')">수정하기</a>
                 <a href="#" class="card-link">공유하기</a>
             </div>
-        </div>
+            </div>
+
+
     </div>
 
 </body>
