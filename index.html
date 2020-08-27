@@ -153,13 +153,14 @@
                                             </ul>
                                         <div class="card-body">
                                             <a href="#" class="card-link"
-                                            onclick="rewrite('${date}','${weight}','${sleeptime}','${awaketime}','${breakfast_time}','${breakfast}','${snack1_time}','${snack1}','${snack2_time}','${snack2}','${snack3_time}','${snack3}','${dinner_time}','${dinner}','${movement}','${fullness}')">수정하기</a>
+                                            onclick="rewrite('${date}','${weight}','${sleeptime}','${awaketime}','${breakfast_time}','${breakfast}',
+                                            '${snack1_time}','${snack1}','${snack2_time}','${snack2}','${snack3_time}','${snack3}','${dinner_time}',
+                                            '${dinner}','${movement}','${fullness}')">수정하기</a>
                                             <a href="#" class="card-link">공유하기</a>
                                         </div>
                                         </div>`;
 
                         $('#card_array').append(temp_html);
-                        console.log('메이크카드함수?')
 
 
                     }
@@ -180,7 +181,8 @@
         }
     }
 
-    function rewrite(date,weight,sleeptime,awaketime,breakfast_time,breakfast,snack1_time,snack1,snack2,snack3,snack2_time,snack3_time,fullness) {
+    function rewrite(date,weight,sleeptime,awaketime,breakfast_time,breakfast,
+    snack1_time,snack1,snack2,snack3,snack2_time,snack3_time,fullness,movement) {
         $('#posting_form').show()
         $('#btn_posting_form').text('기록보기:)')
         $('#date').val(date)
@@ -198,6 +200,21 @@
         $('#dinner_time').val(dinner_time)
         $('#dinner').val(dinner)
         $('#fullness').val(fullness)
+        
+     
+        if (movement==$('#sedentary').val){
+            $('#sedentary').prop('checked',true)
+            return;
+            } else if (movement==$('#low').val){
+            $('#sedentary').prop('checked',true)
+            return;
+            } else if (movement==$('#active').val){
+            $('#active').prop('checked',true)
+            return;
+            } else {$('#high').prop('checked',true)
+            return;
+            }
+        
     }
 
     function setThumbnail(event) {
@@ -525,13 +542,13 @@
 
             <div>활동량 평가
                 <div id="active">
-                    <span><input type="checkbox" name="movement" value="sedentary" onclick="choiceone(this)"
+                    <span><input type="checkbox" name="movement" id="sedentary" value="sedentary"onclick="choiceone(this)"
                             style="margin-right: 0.5vw;">Sedentary</span>
-                    <span><input type="checkbox" name="movement" value="low" onclick="choiceone(this)"
+                    <span><input type="checkbox" name="movement" id="low" value="low" onclick="choiceone(this)"
                             style="margin-right: 0.5vw;">Low</span>
-                    <span><input type="checkbox" name="movement" value="active" onclick="choiceone(this)"
+                    <span><input type="checkbox" name="movement" id="active" value="active" onclick="choiceone(this)"
                             style="margin-right: 0.5vw;">Active</span>
-                    <span><input type="checkbox" name="movement" value="high" onclick="choiceone(this)"
+                    <span><input type="checkbox" name="movement" id="high" value="hign" onclick="choiceone(this)"
                             style="margin-right: 0.5vw;">High</span>
                 </div>
             </div>
