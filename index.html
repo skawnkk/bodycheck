@@ -112,6 +112,8 @@
                     let pages = response['pages']
                     for (let i = 0; i < pages.length; i++) {
 
+
+
                         let page = pages[i]
                         let weight = page['weight']
                         let date = page['date']
@@ -183,8 +185,11 @@
 
     function rewrite(date,weight,sleeptime,awaketime,breakfast_time,breakfast,
     snack1_time,snack1,snack2,snack3,snack2_time,snack3_time,fullness,movement) {
+
         $('#posting_form').show()
         $('#btn_posting_form').text('기록보기:)')
+        $('#btn_save').hide();
+        $('#btn_update').show();
         $('#date').val(date)
         $('#weight').val(weight)
         $('#sleeptime').val(sleeptime)
@@ -200,12 +205,7 @@
         $('#dinner_time').val(dinner_time)
         $('#dinner').val(dinner)
         $('#fullness').val(fullness)
-        $('#btn_save').text('업데이트')
-        $('#btn_save').click(update());
-
         
-        
-     
         if (movement==$('#sedentary').val){
             $('#sedentary').prop('checked',true)
             return;
@@ -218,11 +218,12 @@
             } else {$('#high').prop('checked',true)
             return;
             }
-        
     }
 
     function update(){
-        let date = $('#date').val();
+        console.log('here?')
+
+        let date=$('#date').val();
         let weight = $('#weight').val();
         let sleeptime = $('#sleeptime').val();
         let awaketime = $('#awaketime').val();
@@ -240,29 +241,33 @@
         let snack3 = $('#snack3').val();
         let fullness = $('#fullness').val();
 
-        let choice = document.getElementsByName("movement")
-        let choice_length = choice.length;
+        // let choice = document.getElementsByName("movement")
+        // let choice_length = choice.length;
 
-        for (i = 0; i < choice_length; i++) {
-            if (choice[i].checked == true) {
-                var movement = choice[i].value;
-            }
-        }
+        // for (i = 0; i < choice_length; i++) {
+        //     if (choice[i].checked == true) {
+        //         var movement = choice[i].value;
+        //     }
+        // }
 
         $.ajax({
             type: "POST",
             url: "/update",
             data: {date_give: date, weight_give: weight, sleeptime_give: sleeptime, awaketime_give: awaketime, breakfast_time_give: breakfast_time,
                 breakfast_give: breakfast, lunch_give: lunch, meal_give: meal, dinner_give: dinner, dinner_time_give: dinner_time, snack1_give: snack1, snack1_time_give: snack1_time,
-                snack2_give: snack2, snack2_time_give: snack2_time, snack3_give: snack3, snack3_time_give: snack3_time, movement_give: movement, fullness_give: fullness
-            },
+                snack2_give: snack2, snack2_time_give: snack2_time, snack3_give: snack3, snack3_time_give: snack3_time,  fullness_give: fullness
+            }, 
+            // movement_give: movement,
             success: function (response) { 
+               
                 if (response['result'] == 'success') {
+                    console.log('sucess?')
                     window.location.reload();
                     }
             }
         }
-    )}
+    )
+    }
 
     function setThumbnail(event) {
         for (let image of event.target.files) {
@@ -607,6 +612,9 @@
             <div class="save">
                 <button class="btn" id="btn_save" type="button" style="margin-top: 3vh; width:10vw; font-size: medium;"
                     onclick="savedata()">저장하기</button>
+                    <button class="btn" id="btn_update" type="button" style="margin-top: 3vh; width:10vw; font-size: medium; display:none;"
+                    onclick="update()">업데이트</button>
+                    
             </div>
 
 

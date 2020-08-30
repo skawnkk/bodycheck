@@ -32,7 +32,7 @@ def savedata():
     snack2_receive = request.form['snack2_give']
     snack3_time_receive = request.form['snack3_time_give']
     snack3_receive = request.form['snack3_give']
-    movement_receive=request.form['movement_give']
+    # movement_receive=request.form['movement_give']
     fullness_receive=request.form['fullness_give']
 
     daily_page = {
@@ -50,7 +50,7 @@ def savedata():
         'snack2': snack2_receive,
         'snack3_time': snack3_time_receive,
         'snack3': snack3_receive,
-        'movement' :movement_receive,
+        # 'movement' :movement_receive,
         'fullness': fullness_receive
         # 'meal_time':meal_time_receive,
         # 'lunch':lunch_receive
@@ -78,12 +78,10 @@ def update():
     snack2_receive = request.form['snack2_give']
     snack3_time_receive = request.form['snack3_time_give']
     snack3_receive = request.form['snack3_give']
-    movement_receive=request.form['movement_give']
+    # movement_receive=request.form['movement_give']
     fullness_receive=request.form['fullness_give']
-
-    daily_page = {
-        'date': date_receive,
-        'weight': weight_receive,
+    
+    db.checkbody.update({'date':date_receive},{'$set': {'weight': weight_receive,
         'sleeptime': sleeptime_receive,
         'awaketime': awaketime_receive,
         'breakfast_time': breakfast_time_receive,
@@ -96,20 +94,15 @@ def update():
         'snack2': snack2_receive,
         'snack3_time': snack3_time_receive,
         'snack3': snack3_receive,
-        'movement' :movement_receive,
-        'fullness': fullness_receive
-        # 'meal_time':meal_time_receive,
-        # 'lunch':lunch_receive
-    }
-
-    db.checkbody.update(daily_page)
+        # 'movement' :movement_receive,
+        'fullness': fullness_receive}})
+        
     return jsonify({'result': 'success'})
-
 
 
 @app.route('/list', methods=['GET'])
 def listing():
-    result = list(db.checkbody.find({},{'_id':0}).sort('date',-1))
+    result=list(db.checkbody.find({},{'_id':0}).sort('date',-1))
     return jsonify({'result':'success','pages': result})
 
 if __name__ == '__main__':
