@@ -200,6 +200,10 @@
         $('#dinner_time').val(dinner_time)
         $('#dinner').val(dinner)
         $('#fullness').val(fullness)
+        $('#btn_save').text('업데이트')
+        $('#btn_save').click(update());
+
+        
         
      
         if (movement==$('#sedentary').val){
@@ -216,6 +220,49 @@
             }
         
     }
+
+    function update(){
+        let date = $('#date').val();
+        let weight = $('#weight').val();
+        let sleeptime = $('#sleeptime').val();
+        let awaketime = $('#awaketime').val();
+        let breakfast_time = $('#breakfast_time').val();
+        let breakfast = $('#breakfast').val();
+        let meal = $('meal').val();
+        let lunch = $('#lunch').val();
+        let dinner_time = $('#dinner_time').val();
+        let dinner = $('#dinner').val();
+        let snack1_time = $('#snack1_time').val();
+        let snack1 = $('#snack1').val();
+        let snack2_time = $('#snack2_time').val();
+        let snack2 = $('#snack2').val();
+        let snack3_time = $('#snack3_time').val();
+        let snack3 = $('#snack3').val();
+        let fullness = $('#fullness').val();
+
+        let choice = document.getElementsByName("movement")
+        let choice_length = choice.length;
+
+        for (i = 0; i < choice_length; i++) {
+            if (choice[i].checked == true) {
+                var movement = choice[i].value;
+            }
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/update",
+            data: {date_give: date, weight_give: weight, sleeptime_give: sleeptime, awaketime_give: awaketime, breakfast_time_give: breakfast_time,
+                breakfast_give: breakfast, lunch_give: lunch, meal_give: meal, dinner_give: dinner, dinner_time_give: dinner_time, snack1_give: snack1, snack1_time_give: snack1_time,
+                snack2_give: snack2, snack2_time_give: snack2_time, snack3_give: snack3, snack3_time_give: snack3_time, movement_give: movement, fullness_give: fullness
+            },
+            success: function (response) { 
+                if (response['result'] == 'success') {
+                    window.location.reload();
+                    }
+            }
+        }
+    )}
 
     function setThumbnail(event) {
         for (let image of event.target.files) {
@@ -386,11 +433,14 @@
 <body>
 
     <div class="jumbotron">
-        <h1 class="display-4">Hello, world!</h1>
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to
-            featured content or information.</p>
+        <h1 class="display-4">Design your body!</h1>
+        
+        <p class="lead" style="margin-top: 2em;">당신의 몸은 소중해요. 예쁘고 멋있어 보이는 몸도 좋지만 당신의 건강한 하루를 응원하는 마음으로 시작해요.
+            <br>규칙적인 생활습관을 만들어나가면 몸도 가벼워지고 기분도 한결 나아질거에요.
+            <br>당신의 몸과 마음의 주인이 되어보세요 :)</p>
         <hr class="my-4">
-        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+        <p> 매일 비슷한 시간에 잠을 자고, 식사를 하는 습관을 들이면 우리의 몸은 거기에 맞춰 최적의 컨디션을 만들어내요.
+            <br>당신의 에너지넘치는 하루를 위해 기록을 시작해볼까요?</p>
         <p class="lead">
             <button class="btn" id="btn_posting_form" onclick="openclose()">기록하자!</button>
         </p>
